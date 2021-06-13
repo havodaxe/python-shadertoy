@@ -4,6 +4,9 @@ import sys
 import pygame
 from pygame.locals import *
 
+vertex_main = open("vertex_main.glsl", "rb")
+fragment_main = open("fragment_main.glsl", "rb")
+
 try:
     # For OpenGL-ctypes
     from OpenGL import platform
@@ -95,20 +98,7 @@ if __name__ == '__main__':
     pygame.init()
     pygame.display.set_mode((width, height), OPENGL | DOUBLEBUF)
 
-    program = compile_program(b'''
-    // Vertex program
-    varying vec3 pos;
-    void main() {
-        pos = gl_Vertex.xyz;
-        gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
-    }
-    ''', b'''
-    // Fragment program
-    varying vec3 pos;
-    void main() {
-        gl_FragColor.rgb = pos.xyz;
-    }
-    ''')
+    program = compile_program(vertex_main.read(), fragment_main.read())
 
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
